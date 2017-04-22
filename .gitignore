@@ -1,0 +1,12 @@
+*.swp
+*.swo
+*.txt
+*.log
+*.bak
+
+.idea/
+
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
