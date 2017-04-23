@@ -17,8 +17,14 @@ class Command extends CConsoleCommand
         $elapsed = microtime(true) - $this->ts_action_begin;
         $memory  = memory_get_peak_usage() / 1024.0 / 1024; # MB
         Log::info("%s::%s(%s) finished [elapsed:%.06f][memory:%.02fMB]", get_class($this), $action, $args, $elapsed, $memory);
-        if ($memory >= Yii::app()->params['memory_limit_warning']) {
-            Log::warning("%s::%s consumed more than %dMB of memory", get_class($this), $action, Yii::app()->params['memory_limit_warning']);
+
+        try {
+            $memory_limit_warning = Yii::app()->params->memory_limit_warning;
+        } catch (CException $e) {
+            $memory_limit_warning = 64; #MB
+        }
+        if ($memory >= $memory_limit_warning) {
+            Log::warning("%s::%s consumed more than %dMB of memory", get_class($this), $action, $memory_limit_warning);
         }
         return $exitCode;
     }
