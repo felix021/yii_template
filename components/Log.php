@@ -30,17 +30,18 @@ class Log
         }
         self::$last_log = $msg;
 
-        Yii::log($msg, $level);
+        $trace = debug_backtrace();
+        if (count($trace) >= 3) {
+            $caller = $trace[2];
+            $category = sprintf('%s::%s', $caller['class'], $caller['function']);
+        } else {
+            $category = '';
+        }
+        Yii::log($msg, $level, $category);
 
         if (Yii::app() instanceof CConsoleApplication) {
-            $trace = debug_backtrace();
-            if (count($trace) >= 3) {
-                $caller = $trace[2];
-                $log_caller = sprintf('[%s::%s] ', $caller['class'], $caller['function']);
-            } else {
-                $log_caller = '';
-            }
-            fprintf(STDERR, "%s [%s] %s%s\n", date("Y-m-d H:i:s"), $level, $log_caller, $msg);
+            $category = $category ? "[$category] " : "";
+            fprintf(STDERR, "%s [%s] %s%s\n", date("Y-m-d H:i:s"), $level, $category, $msg);
         }
     }
 

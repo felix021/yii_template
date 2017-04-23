@@ -22,6 +22,10 @@ $main_config = [
             'directoryLevel'  =>  '2', //缓存文件的目录深度
         ],
     ],
+
+    'params'    => [
+        'memory_limit_warning'  => 64, #MB
+    ],
 ];
 
 return CMap::mergeArray($main_config, $env_config);

@@ -1,10 +1,10 @@
 <?php
 
-class TestCommand extends CConsoleCommand
+class TestCommand extends Command
 {
     public function actionTest()
     {
-        Log::info("This is %s @ %s\n", Yii::app()->name, gethostname());
+        Log::info("This is %s @ %s", Yii::app()->name, gethostname());
     }
 
     public function actionMySQL($db = 'db')
@@ -17,7 +17,7 @@ class TestCommand extends CConsoleCommand
             $conf[$key] = $val;
         }
         printf(
-            "mysql -h%s -u%s -p%s %s\n",
+            "mysql -h%s -u%s '-p%s' %s\n",
             escapeshellarg(@$conf['host'] ?: '127.0.0.1'),
             escapeshellarg($db->username),
             escapeshellarg($db->password),
@@ -31,7 +31,7 @@ class TestCommand extends CConsoleCommand
             die("be careful!");
         }
         $db_name = Yii::app()->name;
-        Yii::app()->db->createCommand("drop database $db_name")->execute();
+        Yii::app()->db->createCommand("drop database if exists $db_name")->execute();
         Yii::app()->db->createCommand(file_get_contents(Yii::app()->basePath . "/data/$db_name.sql"))->execute();
     }
 }
